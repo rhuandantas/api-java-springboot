@@ -27,10 +27,9 @@ public class SwaggerConfig {
 
 	private ApiInfo metaInfo() {
 
-		ApiInfo apiInfo = new ApiInfo("Login API REST", "API REST de Login.", "1.0", "Terms of Service",
+		return new ApiInfo("Login API REST", "API REST de Login.", "1.0", "Terms of Service",
 				new Contact("Teste test", "yoursite.com", "test@gmail.com"), "Apache License Version 2.0",
 				"https://www.apache.org/licesen.html", new ArrayList<VendorExtension>());
 
-		return apiInfo;
 	}
 }

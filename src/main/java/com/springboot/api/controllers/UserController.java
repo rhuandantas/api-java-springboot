@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.springboot.api.exceptions.UserNotFoundException;
 import com.springboot.api.models.User;
-import com.springboot.api.repository.UserRepository;
+import com.springboot.api.service.IUserService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,31 +27,46 @@ import io.swagger.annotations.ApiOperation;
 public class UserController {
 
 	@Autowired
-	public UserRepository repository;
+	public IUserService service;
 
 	@GetMapping("/users")
 	@ApiOperation(value = "Retorna uma lista de usuários")
 	public List<User> list() {
-		return repository.findAll();
+		return service.list();
 	}
 
 	@GetMapping("/user/{id}")
 	public User listById(@PathVariable("id") long id) {
-		return repository.findById(id);
+		return service.listById(id);
 	}
 
-	@PostMapping("/user")
-	public void insert(@RequestBody User user) {
-		repository.save(user);
+	@PostMapping("/user/signup")
+	public void signup(@RequestBody User user) throws IllegalArgumentException, UserNotFoundException {
+		service.signup(user);
+	}
+
+	@PostMapping("/user/signin")
+	public User signin(@RequestBody User user) {
+		return service.signin(user.getEmail(), user.getPassword());
+	}
+
+	@PostMapping("/user/changePassword")
+	public void changePassword() {
+
+	}
+
+	@PostMapping("/user/forgotPassword")
+	public void forgotPassword() {
+
 	}
 
 	@DeleteMapping("/user/{id}")
 	public void delete(@PathVariable("id") long id) {
-		repository.deleteById(id);
+		service.delete(id);
 	}
 
 	@PutMapping("/user")
 	public User update(@RequestBody User user) {
-		return repository.save(user);
+		return service.update(user);
 	}
 }

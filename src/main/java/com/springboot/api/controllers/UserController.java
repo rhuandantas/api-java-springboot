@@ -3,6 +3,8 @@ package com.springboot.api.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.springboot.api.dto.UserDTO;
 import com.springboot.api.exceptions.UserNotFoundException;
 import com.springboot.api.models.User;
 import com.springboot.api.service.IUserService;
@@ -41,13 +44,17 @@ public class UserController {
 	}
 
 	@PostMapping("/user/signup")
-	public void signup(@RequestBody User user) throws IllegalArgumentException, UserNotFoundException {
-		service.signup(user);
+	public ResponseEntity<UserDTO> signup(@RequestBody UserDTO dto) throws UserNotFoundException {
+		service.signup(dto.toUser());
+		return new ResponseEntity<>(dto, HttpStatus.CREATED);
 	}
 
 	@PostMapping("/user/signin")
-	public User signin(@RequestBody User user) {
-		return service.signin(user.getEmail(), user.getPassword());
+	public ResponseEntity<UserDTO> signin(@RequestBody UserDTO dto) {
+		String email = dto.toUser().getEmail();
+		String password = dto.toUser().getPassword();
+		User user = service.signin(email, password);
+		return new ResponseEntity<>(dto.toUserDTO(user), HttpStatus.OK);
 	}
 
 	@PostMapping("/user/changePassword")
@@ -66,7 +73,8 @@ public class UserController {
 	}
 
 	@PutMapping("/user")
-	public User update(@RequestBody User user) {
-		return service.update(user);
+	public ResponseEntity<UserDTO> update(@RequestBody UserDTO dto) {
+		User user = service.update(dto.toUser());
+		return new ResponseEntity<>(dto.toUserDTO(user), HttpStatus.OK);
 	}
 }

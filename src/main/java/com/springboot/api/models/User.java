@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "TB_USER")
@@ -17,10 +18,31 @@ public class User implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
+	@NotNull
 	private String name;
 	@Column(name = "email", unique = true)
+	@NotNull
 	private String email;
+	@NotNull
 	private String password;
+
+	public User() {
+	}
+
+	public User(@NotNull String name, @NotNull String email, @NotNull String password) {
+		super();
+		this.name = name;
+		this.email = email;
+		this.password = password;
+	}
+
+	public User(long id, @NotNull String name, @NotNull String email, @NotNull String password) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.email = email;
+		this.password = password;
+	}
 
 	public long getId() {
 		return id;
